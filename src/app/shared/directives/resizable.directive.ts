@@ -8,7 +8,7 @@ import {
   Output,
   Renderer2,
 } from '@angular/core';
-import { fromEvent, merge } from 'rxjs';
+import { fromEvent, merge, Subscription } from 'rxjs';
 import { takeUntil, concatAll, map, tap } from 'rxjs/operators';
 
 @Directive({
@@ -18,6 +18,27 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
   @Output() moveDistence = new EventEmitter<{ x: number; y: number }>();
 
   @Input() direction: 'vertical' | 'horizontal' = 'vertical';
+  @Input() resizeBarWidth = '14px';
+  @Input('resizeBarEle') set resizeBarEle(data: HTMLElement) {
+    if (!data) {
+      return;
+    }
+    this.render.setStyle(
+      data,
+      'cursor',
+      this.direction === 'vertical' ? 'n-resize' : 'e-resize'
+    );
+    this.render.setStyle(data, 'userSelect', 'none');
+    this.render.setStyle(data, 'background', '#fff');
+    this.render.setStyle(
+      data,
+      this.direction === 'horizontal' ? 'min-width' : 'min-height',
+      this.resizeBarWidth
+    );
+    this.render.setStyle(data, 'display', 'flex');
+    this.render.setStyle(data, 'justifyContent', 'center');
+    this.render.setStyle(data, 'alignItems', 'center');
+  }
   @Input('resizeEle') set resizeEle(data: HTMLElement) {
     if (!data) {
       return;
@@ -31,6 +52,7 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
 
   defaultRect = { width: 0, height: 0 };
   resizeElement: HTMLElement;
+  subscription: Subscription;
 
   constructor(
     private readonly elementRef: ElementRef,
@@ -46,8 +68,8 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
   initMouseEvent() {
     const element = this.elementRef.nativeElement;
     const mouseUpEvent = fromEvent(element, 'mouseup');
-    // const leaveEvent = fromEvent(element, 'mouseleave');
-    fromEvent(element, 'mousedown')
+    const leaveEvent = fromEvent(element, 'mouseleave');
+    this.subscription = fromEvent(element, 'mousedown')
       .pipe(
         tap((event: Event) => {
           event.stopPropagation();
@@ -67,7 +89,7 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
                 moveY: mousemoveEvent['clientY'],
               };
             }),
-            takeUntil(merge(mouseUpEvent))
+            takeUntil(merge(mouseUpEvent, leaveEvent))
           )
         ),
         concatAll()

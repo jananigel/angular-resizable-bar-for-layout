@@ -1,19 +1,25 @@
-<div class="container" appResizable [resizeEle]="resizeEle">
+<div
+  class="container"
+  appResizable
+  [resizeEle]="resizeEle"
+  [resizeBarEle]="horizontalBar"
+>
   <div #resizeEle class="top-area">
     <div class="content">Top</div>
   </div>
-  <div>=</div>
+  <div #horizontalBar>=</div>
   <div class="bottom-area">
     <div
       class="bottom-container"
       appResizable
       [direction]="'horizontal'"
       [resizeEle]="resizeBottomEle"
+      [resizeBarEle]="verticalBar"
     >
       <div #resizeBottomEle class="bottom-left">
         <div class="content">Bottom-left</div>
       </div>
-      <div>=</div>
+      <div #verticalBar>=</div>
       <div class="bottom-right">Bottom-right</div>
     </div>
   </div>
