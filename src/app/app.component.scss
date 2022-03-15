@@ -9,16 +9,27 @@ p {
 
   .top-area {
     display: flex;
-    flex-direction: column;
-
-    .content {
-      flex-basis: 100px;
-      background: #ffc0c0;
-    }
+    flex-basis: 100px;
+    background: #ffc0c0;
   }
 
   .bottom-area {
     background: #b5f0fe;
     flex: 1;
   }
+}
+
+.bottom-container {
+  display: flex;
+  height: 100%;
+}
+
+.bottom-left {
+  flex-basis: 121px;
+  background: #baefad;
+}
+
+.bottom-right {
+  flex: 1;
+  background: #fdf4b7;
 }

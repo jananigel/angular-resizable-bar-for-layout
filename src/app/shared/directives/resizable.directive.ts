@@ -62,7 +62,8 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
     // const leaveEvent = fromEvent(element, 'mouseleave');
     fromEvent(element, 'mousedown')
       .pipe(
-        tap((event) => {
+        tap((event: Event) => {
+          event.stopPropagation();
           this.defaultRect = {
             width: this.resizeElement.getBoundingClientRect().width,
             height: this.resizeElement.getBoundingClientRect().height,
@@ -95,6 +96,7 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
             `${this.defaultRect.height - y}px`
           );
         } else {
+          // console.log('horizontal = ', this.defaultRect);
           this.render.setStyle(
             this.resizeElement,
             'flexBasis',

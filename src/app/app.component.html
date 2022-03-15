@@ -1,9 +1,25 @@
-<div class="container" appResizable [resizeEle]="resizeEle" (moveDistence)="onResizableHeight($event, resizeEle)">
-  <div class="top-area">
-    <div #resizeEle class="content">Top</div>
-    <div >
-      =
+<div
+  class="container"
+  appResizable
+  [resizeEle]="resizeEle"
+  (moveDistence)="onResizableHeight($event, resizeEle)"
+>
+  <div #resizeEle class="top-area">
+    <div class="content">Top</div>
+  </div>
+  <div>=</div>
+  <div class="bottom-area">
+    <div
+      class="bottom-container"
+      appResizable
+      [direction]="'horizontal'"
+      [resizeEle]="resizeBottomEle"
+    >
+      <div #resizeBottomEle class="bottom-left">
+        <div class="content">Bottom-left</div>
+      </div>
+      <div>=</div>
+      <div class="bottom-right">Bottom-right</div>
     </div>
   </div>
-  <div class="bottom-area">Bottom</div>
 </div>
