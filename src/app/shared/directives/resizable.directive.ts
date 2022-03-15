@@ -38,23 +38,10 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit() {
-    this.initDefaultElement();
     this.initMouseEvent();
   }
 
   ngOnDestroy() {}
-
-  initDefaultElement() {
-    // const element = this.elementRef.nativeElement;
-    // this.render.setStyle(element, 'display', 'block');
-    // this.render.setStyle(element, 'textAlign', 'center');
-    // this.render.setStyle(element, 'userSelect', 'none');
-    // this.render.setStyle(
-    //   element,
-    //   'cursor',
-    //   this.direction === 'vertical' ? 'n-resize' : 'e-resize'
-    // );
-  }
 
   initMouseEvent() {
     const element = this.elementRef.nativeElement;
@@ -86,9 +73,8 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
         concatAll()
       )
       .subscribe((e) => {
-        const x = e['startX'] - e['moveX']; //0 ? 1 : -1;
-        const y = e['startY'] - e['moveY']; //0 ? 1 : -1;
-        // console.log('event = ', e, ' x = ', x, ' y = ', y);
+        const x = e['startX'] - e['moveX'];
+        const y = e['startY'] - e['moveY'];
         if (this.direction === 'vertical') {
           this.render.setStyle(
             this.resizeElement,
@@ -96,14 +82,12 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
             `${this.defaultRect.height - y}px`
           );
         } else {
-          // console.log('horizontal = ', this.defaultRect);
           this.render.setStyle(
             this.resizeElement,
             'flexBasis',
             `${this.defaultRect.width - x}px`
           );
         }
-        // this.moveDistence.next({ x, y });
       });
   }
 }
