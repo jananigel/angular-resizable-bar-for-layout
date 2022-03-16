@@ -1,0 +1,14 @@
+.bottom-container {
+  display: flex;
+  height: 100%;
+}
+
+.bottom-left {
+  flex-basis: 121px;
+  background: #baefad;
+}
+
+.bottom-right {
+  flex: 1;
+  background: #fdf4b7;
+}

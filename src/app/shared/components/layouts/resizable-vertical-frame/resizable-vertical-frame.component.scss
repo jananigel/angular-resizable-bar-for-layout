@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+
+  .top-area {
+    display: flex;
+    flex-basis: 100px;
+    background: #ffc0c0;
+  }
+
+  .bottom-area {
+    background: #b5f0fe;
+    flex: 1;
+  }
+}

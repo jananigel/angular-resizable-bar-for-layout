@@ -1,0 +1,15 @@
+<div
+  class="bottom-container"
+  appResizable
+  [direction]="'horizontal'"
+  [resizeEle]="resizeBottomEle"
+  [resizeBarEle]="verticalBar"
+>
+  <div #resizeBottomEle class="bottom-left">
+    <ng-content select="[frame-left]"></ng-content>
+  </div>
+  <div #verticalBar>=</div>
+  <div class="bottom-right">
+    <ng-content select="[frame-right]"></ng-content>
+  </div>
+</div>

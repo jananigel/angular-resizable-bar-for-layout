@@ -1,0 +1,14 @@
+<div
+  class="container"
+  appResizable
+  [resizeEle]="resizeEle"
+  [resizeBarEle]="horizontalBar"
+>
+  <div #resizeEle class="top-area">
+    <ng-content select="[frame-top]"></ng-content>
+  </div>
+  <div #horizontalBar>=</div>
+  <div class="bottom-area">
+    <ng-content select="[frame-bottom]"></ng-content>
+  </div>
+</div>

@@ -2,34 +2,35 @@ p {
   font-family: Lato;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 400px;
+// Source styles
+// .container {
+//   display: flex;
+//   flex-direction: column;
+//   height: 400px;
 
-  .top-area {
-    display: flex;
-    flex-basis: 100px;
-    background: #ffc0c0;
-  }
+//   .top-area {
+//     display: flex;
+//     flex-basis: 100px;
+//     background: #ffc0c0;
+//   }
 
-  .bottom-area {
-    background: #b5f0fe;
-    flex: 1;
-  }
-}
+//   .bottom-area {
+//     background: #b5f0fe;
+//     flex: 1;
+//   }
+// }
 
-.bottom-container {
-  display: flex;
-  height: 100%;
-}
+// .bottom-container {
+//   display: flex;
+//   height: 100%;
+// }
 
-.bottom-left {
-  flex-basis: 121px;
-  background: #baefad;
-}
+// .bottom-left {
+//   flex-basis: 121px;
+//   background: #baefad;
+// }
 
-.bottom-right {
-  flex: 1;
-  background: #fdf4b7;
-}
+// .bottom-right {
+//   flex: 1;
+//   background: #fdf4b7;
+// }
