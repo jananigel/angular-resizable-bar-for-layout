@@ -65,14 +65,16 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
     this.initMouseEvent();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
 
   initMouseEvent() {
     const element = this.elementRef.nativeElement;
     const mouseUpEvent = fromEvent(element, 'mouseup');
     const leaveEvent = fromEvent(element, 'mouseleave');
     const stopPipe$$ = new Subject<void>();
-    fromEvent(element, 'mousedown')
+    this.subscription = fromEvent(element, 'mousedown')
       .pipe(
         tap((event: Event) => {
           event.stopPropagation();
