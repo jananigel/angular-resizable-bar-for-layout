@@ -11,6 +11,13 @@ import {
 import { fromEvent, merge, Subject, Subscription } from 'rxjs';
 import { takeUntil, concatAll, map, tap } from 'rxjs/operators';
 
+interface MoveInfo {
+  startX: number;
+  startY: number;
+  moveX: number;
+  moveY: number;
+}
+
 @Directive({
   selector: '[appResizable]',
 })
@@ -24,34 +31,17 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
       return;
     }
     this.resizeBarElement = data;
-    this.render.setStyle(
-      data,
-      'cursor',
-      this.direction === 'vertical' ? 'n-resize' : 'e-resize'
-    );
-    this.render.setStyle(data, 'userSelect', 'none');
-    this.render.setStyle(data, 'background', '#fff');
-    this.render.setStyle(
-      data,
-      this.direction === 'horizontal' ? 'min-width' : 'min-height',
-      this.resizeBarWidth
-    );
-    this.render.setStyle(data, 'display', 'flex');
-    this.render.setStyle(data, 'justifyContent', 'center');
-    this.render.setStyle(data, 'alignItems', 'center');
+    this.updateResizableBarStyle(this.resizeBarElement);
   }
   @Input('resizeEle') set resizeEle(data: HTMLElement) {
     if (!data) {
       return;
     }
     this.resizeElement = data;
-    this.defaultRect = {
-      width: data.getBoundingClientRect().width,
-      height: data.getBoundingClientRect().height,
-    };
+    this.storeOriginalRect(data);
   }
 
-  defaultRect = { width: 0, height: 0 };
+  originalRect = { width: 0, height: 0 };
   resizeElement: HTMLElement;
   resizeBarElement: HTMLElement;
   subscription: Subscription;
@@ -76,25 +66,23 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
     const stopPipe$$ = new Subject<void>();
     this.subscription = fromEvent(element, 'mousedown')
       .pipe(
-        tap((event: Event) => {
+        tap((event: MouseEvent) => {
           event.stopPropagation();
-          this.defaultRect = {
-            width: this.resizeElement.getBoundingClientRect().width,
-            height: this.resizeElement.getBoundingClientRect().height,
-          };
+          this.storeOriginalRect(this.resizeElement);
         }),
-        map((event) =>
+        map((event: MouseEvent) =>
           fromEvent(element, 'mousemove').pipe(
-            map((mousemoveEvent) => {
-              if (event.target !== this.resizeBarElement) {
+            map((mousemoveEvent: MouseEvent) => {
+              const isNotClickResizeBar =
+                event.target !== this.resizeBarElement;
+              if (isNotClickResizeBar) {
                 stopPipe$$.next(null);
               }
-              // console.log('mousemoveEvent = ', mousemoveEvent);
               return {
-                startX: event['clientX'],
-                startY: event['clientY'],
-                moveX: mousemoveEvent['clientX'],
-                moveY: mousemoveEvent['clientY'],
+                startX: event.clientX,
+                startY: event.clientY,
+                moveX: mousemoveEvent.clientX,
+                moveY: mousemoveEvent.clientY,
               };
             }),
             takeUntil(merge(mouseUpEvent, leaveEvent, stopPipe$$))
@@ -102,22 +90,43 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
         ),
         concatAll()
       )
-      .subscribe((e) => {
-        const x = e['startX'] - e['moveX'];
-        const y = e['startY'] - e['moveY'];
-        if (this.direction === 'vertical') {
-          this.render.setStyle(
-            this.resizeElement,
-            'flexBasis',
-            `${this.defaultRect.height - y}px`
-          );
-        } else {
-          this.render.setStyle(
-            this.resizeElement,
-            'flexBasis',
-            `${this.defaultRect.width - x}px`
-          );
-        }
+      .subscribe((e: MoveInfo) => {
+        this.resizeFrame(e);
       });
+  }
+
+  private resizeFrame(e: MoveInfo) {
+    const x = e.startX - e.moveX;
+    const y = e.startY - e.moveY;
+    const { width, height } = this.originalRect;
+    const isVertical = this.direction === 'vertical';
+    const size = isVertical ? height - y : width - x;
+    this.render.setStyle(this.resizeElement, 'flexBasis', `${size}px`);
+  }
+
+  private storeOriginalRect(ele: HTMLElement) {
+    this.originalRect = {
+      width: ele.getBoundingClientRect().width,
+      height: ele.getBoundingClientRect().height,
+    };
+  }
+
+  private updateResizableBarStyle(ele: HTMLElement) {
+    const minWidthHeight =
+      this.direction === 'horizontal' ? 'min-width' : 'min-height';
+    const isVertical = this.direction === 'vertical';
+    this.render.setAttribute(
+      ele,
+      'style',
+      `
+        cursor: ${isVertical ? 'n-resize' : 'e-resize'};
+        user-select: none;
+        background: #fff;
+        ${minWidthHeight}: ${this.resizeBarWidth};
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    `
+    );
   }
 }
